@@ -324,25 +324,263 @@ apply(X=mat,MARGIN = c(1,2), FUN = f1,v2=1)</code></pre>
 </div>
 <div id="lapply" class="section level3">
 <h3>lapply()</h3>
+<p>lapply() function is useful for performing operations on list objects and returns a list object of same length of original set. lappy() returns a list of the similar length as input list object, each element of which is the result of applying FUN to the corresponding element of list. Lapply in R takes list, vector or data frame as input and gives output in list.</p>
 <pre class="r"><code>#Example
-#Sort the list alphabetically:</code></pre>
-<div id="section" class="section level4">
-<h4><span style="color:orange"> </span></h4>
+#Sort the list alphabetically:
+movies &lt;- c(&quot;SPYDERMAN&quot;,&quot;BATMAN&quot;,&quot;VERTIGO&quot;,&quot;CHINATOWN&quot;)
+movies_lower &lt;-lapply(movies, tolower)
+str(movies_lower)</code></pre>
+<pre><code>## List of 4
+##  $ : chr &quot;spyderman&quot;
+##  $ : chr &quot;batman&quot;
+##  $ : chr &quot;vertigo&quot;
+##  $ : chr &quot;chinatown&quot;</code></pre>
+<div id="description-1" class="section level4">
+<h4><span style="color:orange"> Description </span></h4>
+<p>lapply returns a list of the same length as X, each element of which is the result of applying FUN to the corresponding element of X.</p>
+</div>
+<div id="arguments-1" class="section level4">
+<h4><span style="color:orange"> Arguments </span></h4>
+<ul>
+<li><p>X a vector (atomic or list) or an expression object. Other objects (including classed objects) will be coerced by base::as.list.</p></li>
+<li><p>FUN<br />
+the function to be applied to each element of X: see ‘Details’. In the case of functions like +, %*%, the function name must be backquoted or quoted.</p></li>
+<li><p>…<br />
+optional arguments to FUN.</p></li>
+</ul>
+</div>
+<div id="example-1" class="section level4">
+<h4><span style="color:orange"> Example 1 </span></h4>
+<pre class="r"><code>x &lt;- list(a = 1:10, beta = exp(-3:3), logic = c(TRUE,FALSE,FALSE,TRUE))
+lapply(x, mean)</code></pre>
+<pre><code>## $a
+## [1] 5.5
+## 
+## $beta
+## [1] 4.535125
+## 
+## $logic
+## [1] 0.5</code></pre>
+</div>
+<div id="applying-a-custom-function-1" class="section level4">
+<h4><span style="color:orange"> Applying a custom function </span></h4>
+<ul>
+<li>تابع یک بردار را می‌گیرد و یک بردار را بر می‌گرداند در این حالت فرمت و بعد خروجی با ورودی یکسان است</li>
+</ul>
+<pre class="r"><code>x &lt;- list(a = 1:10, b = 5:1)
+lapply(x, function(x) x^2)</code></pre>
+<pre><code>## $a
+##  [1]   1   4   9  16  25  36  49  64  81 100
+## 
+## $b
+## [1] 25 16  9  4  1</code></pre>
+<ul>
+<li>تابع یک بردار را می‌گیرد و یک عدد را بر می‌گرداند در این حالت به اندازه طول لیست، خروجی داریم. یعنی به ازای هر بردار در لیست مورد نظر یک خروجی خواهیم داشت</li>
+</ul>
+<pre class="r"><code>x &lt;- list(a = 1:10, b = 5:1)
+lapply(x, function(x) sum(x))</code></pre>
+<pre><code>## $a
+## [1] 55
+## 
+## $b
+## [1] 15</code></pre>
+</div>
+<div id="passing-arguments-to-iterated-function-through-apply-1" class="section level4">
+<h4><span style="color:orange"> Passing arguments to iterated function through apply </span></h4>
+<p>Note the … in the function definition:</p>
+<pre class="r"><code>x &lt;- list(a = 1:10, b = 5:1)
+lapply(x, function(x,vr) vr+sum(x),vr=7)</code></pre>
+<pre><code>## $a
+## [1] 62
+## 
+## $b
+## [1] 22</code></pre>
+<pre class="r"><code>x &lt;- list(a = 1:3, b = 4:1)
+lapply(x, function(x,pow) x^pow,pow=2)</code></pre>
+<pre><code>## $a
+## [1] 1 4 9
+## 
+## $b
+## [1] 16  9  4  1</code></pre>
+<p>quantile(x, …)</p>
+<p>quantile(x, probs = seq(0, 1, 0.25), na.rm = FALSE, names = TRUE, type = 7, digits = 7, …)</p>
+<pre class="r"><code>x &lt;- list(a = 1:10, beta = exp(-3:3), logic = c(TRUE,FALSE,FALSE,TRUE))
+lapply(x, quantile, probs = (1:3)/4)</code></pre>
+<pre><code>## $a
+##  25%  50%  75% 
+## 3.25 5.50 7.75 
+## 
+## $beta
+##       25%       50%       75% 
+## 0.2516074 1.0000000 5.0536690 
+## 
+## $logic
+## 25% 50% 75% 
+## 0.0 0.5 1.0</code></pre>
+</div>
+<div id="lapply-vs-for-loop" class="section level4">
+<h4><span style="color:orange"> lapply vs for loop </span></h4>
+<p>The lapply function can be used to avoid for loops, which are known to be slow in R when not used properly. Consider that you want to return a list containing the third power of the even numbers of a vector and the the fourth power of the odd numbers of that vector. In that case you could type:</p>
+<pre class="r"><code># Empty list with 5 elements
+x &lt;- vector(&quot;list&quot;, 5)
+
+# Vector
+vec &lt;- 1:5
+
+for(i in vec) {
+    if(i %% 2 == 0) { # Check if the element &#39;i&#39; is even or odd
+        x[[i]] &lt;- i ^ 3
+    } else {
+        x[[i]] &lt;- i ^ 4
+    }
+}
+x</code></pre>
+<pre><code>## [[1]]
+## [1] 1
+## 
+## [[2]]
+## [1] 8
+## 
+## [[3]]
+## [1] 81
+## 
+## [[4]]
+## [1] 64
+## 
+## [[5]]
+## [1] 625</code></pre>
+<p>An alternative is to use the lappy function as follows:</p>
+<pre class="r"><code>vec &lt;- 1:5
+fun &lt;- function(i) {
+   if(i %% 2 == 0) {
+        i ^ 3
+   } else {
+        i ^ 4
+    }
+}
+
+lapply(vec, fun)</code></pre>
+<pre><code>## [[1]]
+## [1] 1
+## 
+## [[2]]
+## [1] 8
+## 
+## [[3]]
+## [1] 81
+## 
+## [[4]]
+## [1] 64
+## 
+## [[5]]
+## [1] 625</code></pre>
+<p><span style="color:yellow;"> You will only be able to use the lapply function instead of a for loop if you want to return a list of the same length as the vector or list you want to iterate with. </span></p>
+</div>
+<div id="using-lapply-on-certain-columns-of-an-r-data-frame" class="section level4">
+<h4><span style="color:orange"> Using lapply on certain columns of an R data frame </span></h4>
+<p>Consider that you have a data frame and you want to multiply the elements of the first column by one, the elements of the second by two and so on.</p>
+<p>On the one hand, for all columns you could write:</p>
+<pre class="r"><code>df &lt;- data.frame(x = c(6, 2), y = c(3, 6), z = c(2, 3))
+df</code></pre>
+<pre><code>##   x y z
+## 1 6 3 2
+## 2 2 6 3</code></pre>
+<pre class="r"><code># Function applied to all columns
+lapply(1:ncol(df), function(i) df[, i] * i)</code></pre>
+<pre><code>## [[1]]
+## [1] 6 2
+## 
+## [[2]]
+## [1]  6 12
+## 
+## [[3]]
+## [1] 6 9</code></pre>
+<pre class="r"><code>#or lapply(1:ncol(df), function(i,mat) mat[, i] * i,mat=df)</code></pre>
+<p>On the other hand, If you want to use the lapply function to certain columns of the data frame you could type:</p>
+<pre class="r"><code># Function applied to the first and third columns
+lapply(c(1, 3), function(i) df[, i] * i)</code></pre>
+<pre><code>## [[1]]
+## [1] 6 2
+## 
+## [[2]]
+## [1] 6 9</code></pre>
+</div>
+<div id="nested-lapply-functions" class="section level4">
+<h4><span style="color:orange"> Nested lapply functions </span></h4>
+<p>If needed, you can nest multiply lapply functions. Consider that you want to iterate over the columns and rows of a data frame and apply a function to each cell. For that purpose, and supposing that you want to multiply each cell by four, you could type something like the following:</p>
+<pre class="r"><code>df &lt;- data.frame(x = c(6, 2), y = c(3, 6))
+
+# Empty list
+res &lt;- vector(&quot;list&quot;, 2)
+
+for(i in 1:ncol(df)) {
+    for (j in 1:nrow(df)) {
+        res[[j]][i] &lt;- df[j, i] * 4
+    }
+}
+
+res</code></pre>
+<pre><code>## [[1]]
+## [1] 24 12
+## 
+## [[2]]
+## [1]  8 24</code></pre>
+<p>You can get the same values nesting two lapply functions, applying a lapply inside the FUN argument of the first:</p>
+<pre class="r"><code>lapply(1:ncol(df), function(i) {
+       unlist(lapply(1:nrow(df), function(j) {
+              df[j, i] * 4
+       }))
+})</code></pre>
+<pre><code>## [[1]]
+## [1] 24  8
+## 
+## [[2]]
+## [1] 12 24</code></pre>
+<pre class="r"><code>m&lt;-matrix(0,2,3)
+for(i in 1:2){ for(j in 1:3) m[i,j]&lt;-i+j}
+m</code></pre>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    2    3    4
+## [2,]    3    4    5</code></pre>
+<pre class="r"><code>lapply(1:2, function(i) {lapply(1:3,function(j) i+j)})</code></pre>
+<pre><code>## [[1]]
+## [[1]][[1]]
+## [1] 2
+## 
+## [[1]][[2]]
+## [1] 3
+## 
+## [[1]][[3]]
+## [1] 4
+## 
+## 
+## [[2]]
+## [[2]][[1]]
+## [1] 3
+## 
+## [[2]][[2]]
+## [1] 4
+## 
+## [[2]][[3]]
+## [1] 5</code></pre>
+<p>The lapply and sapply functions are very similar, as the first is a wrapper of the second. The main difference between the functions is that lapply returns a list instead of an array. However, if you set simplify = FALSE to the sapply function both will return a list.</p>
+<pre class="r"><code>sapply(1:2, function(i) {sapply(1:3,function(j) i+j)})</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    2    3
+## [2,]    3    4
+## [3,]    4    5</code></pre>
 </div>
 </div>
 <div id="sapply" class="section level3">
 <h3>sapply()</h3>
 <pre class="r"><code>#Example
 #Sort the list alphabetically:</code></pre>
-<div id="section-1" class="section level4">
-<h4><span style="color:orange"> </span></h4>
-</div>
 </div>
 <div id="vapply" class="section level3">
 <h3>vapply()</h3>
 <pre class="r"><code>#Example
 #Sort the list alphabetically:</code></pre>
-<div id="section-2" class="section level4">
+<div id="section" class="section level4">
 <h4><span style="color:orange"> </span></h4>
 </div>
 </div>
@@ -350,7 +588,7 @@ apply(X=mat,MARGIN = c(1,2), FUN = f1,v2=1)</code></pre>
 <h3>tapply()</h3>
 <pre class="r"><code>#Example
 #Sort the list alphabetically:</code></pre>
-<div id="section-3" class="section level4">
+<div id="section-1" class="section level4">
 <h4><span style="color:orange"> </span></h4>
 </div>
 </div>
@@ -358,7 +596,7 @@ apply(X=mat,MARGIN = c(1,2), FUN = f1,v2=1)</code></pre>
 <h3>mapply()</h3>
 <pre class="r"><code>#Example
 #Sort the list alphabetically:</code></pre>
-<div id="section-4" class="section level4">
+<div id="section-2" class="section level4">
 <h4><span style="color:orange"> </span></h4>
 </div>
 </div>
@@ -366,13 +604,13 @@ apply(X=mat,MARGIN = c(1,2), FUN = f1,v2=1)</code></pre>
 <h3>by()</h3>
 <pre class="r"><code>#Example
 #Sort the list alphabetically:</code></pre>
-<div id="section-5" class="section level4">
+<div id="section-3" class="section level4">
 <h4><span style="color:orange"> </span></h4>
 <p>Map ### Map()</p>
 <pre class="r"><code>#Example
 #Sort the list alphabetically:</code></pre>
 </div>
-<div id="section-6" class="section level4">
+<div id="section-4" class="section level4">
 <h4><span style="color:orange"> </span></h4>
 </div>
 </div>
@@ -380,7 +618,7 @@ apply(X=mat,MARGIN = c(1,2), FUN = f1,v2=1)</code></pre>
 <h3>replicate()</h3>
 <pre class="r"><code>#Example
 #Sort the list alphabetically:</code></pre>
-<div id="section-7" class="section level4">
+<div id="section-5" class="section level4">
 <h4><span style="color:orange"> </span></h4>
 </div>
 </div>
