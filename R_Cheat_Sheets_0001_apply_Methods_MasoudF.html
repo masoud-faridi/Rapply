@@ -335,6 +335,26 @@ str(movies_lower)</code></pre>
 ##  $ : chr &quot;batman&quot;
 ##  $ : chr &quot;vertigo&quot;
 ##  $ : chr &quot;chinatown&quot;</code></pre>
+<pre class="r"><code>ls1&lt;-list(a=1:3,b=rep(1:2,each=4),c=1:9)
+lapply(ls1,length)</code></pre>
+<pre><code>## $a
+## [1] 3
+## 
+## $b
+## [1] 8
+## 
+## $c
+## [1] 9</code></pre>
+<pre class="r"><code>ls1&lt;-list(a=1:3,b=1:4,c=1:5)
+lapply(ls1,cumsum)</code></pre>
+<pre><code>## $a
+## [1] 1 3 6
+## 
+## $b
+## [1]  1  3  6 10
+## 
+## $c
+## [1]  1  3  6 10 15</code></pre>
 <div id="description-1" class="section level4">
 <h4><span style="color:orange"> Description </span></h4>
 <p>lapply returns a list of the same length as X, each element of which is the result of applying FUN to the corresponding element of X.</p>
@@ -384,6 +404,13 @@ lapply(x, function(x) sum(x))</code></pre>
 ## 
 ## $b
 ## [1] 15</code></pre>
+<pre class="r"><code>x &lt;- list(a = 1:3, b = 1:4)
+lapply(x, function(x) (min(x)+max(x))/2)</code></pre>
+<pre><code>## $a
+## [1] 2
+## 
+## $b
+## [1] 2.5</code></pre>
 </div>
 <div id="passing-arguments-to-iterated-function-through-apply-1" class="section level4">
 <h4><span style="color:orange"> Passing arguments to iterated function through apply </span></h4>
